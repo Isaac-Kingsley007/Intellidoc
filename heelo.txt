@@ -1,1 +1,7 @@
 hello testing it
+
+https://openrouter.ai/deepseek/deepseek-chat:free/api
+
+https://github.com/marketplace/models/azureml-deepseek/DeepSeek-R1
+
+deep seek links
