@@ -70,6 +70,8 @@ def summarize():
 
 #=== file route end ===
 
+# ChatBot Route
+
 @app.route("/chat", methods = ['POST'])
 def chat():
     print(request.form.get('message'))
@@ -83,7 +85,7 @@ def chat():
 
     return jsonify(response)
 
-# ChatBot Route
+#== chatbot route ends ===
 
 if __name__ == '__main__':
     app.run(debug=True)
