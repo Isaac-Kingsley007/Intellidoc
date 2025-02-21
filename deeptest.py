@@ -1,17 +1,17 @@
 from openai import OpenAI
 
+endpoint = "https://models.inference.ai.azure.com"
+model_name = "DeepSeek-R1"
+token = "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"
+
 client = OpenAI(
-  base_url="https://openrouter.ai/api/v1",
-  api_key="<OPENROUTER_API_KEY>",
+  base_url=endpoint,
+  api_key=token,
 )
 
 completion = client.chat.completions.create(
-  extra_headers={
-    "HTTP-Referer": "<YOUR_SITE_URL>", # Optional. Site URL for rankings on openrouter.ai.
-    "X-Title": "<YOUR_SITE_NAME>", # Optional. Site title for rankings on openrouter.ai.
-  },
   extra_body={},
-  model="deepseek/deepseek-r1:free",
+  model=model_name,
   messages=[
     {
       "role": "user",
@@ -20,3 +20,4 @@ completion = client.chat.completions.create(
   ]
 )
 print(completion.choices[0].message.content)
+completion.choices[0].message.content

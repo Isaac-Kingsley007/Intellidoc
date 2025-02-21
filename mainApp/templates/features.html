@@ -345,7 +345,7 @@
                         processData: false,
                         success: function(response) {
                             // Display chatbot response
-                            displayMessage(response.reply, "bot");
+                            displayMessage(response, "bot");
                         },
                         error: function() {
                             displayMessage("Error communicating with chatbot.", "bot");

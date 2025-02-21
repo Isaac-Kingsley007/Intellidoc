@@ -5,3 +5,7 @@ https://openrouter.ai/deepseek/deepseek-chat:free/api
 https://github.com/marketplace/models/azureml-deepseek/DeepSeek-R1
 
 deep seek links
+
+api key
+
+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

@@ -2,10 +2,12 @@ from app import app
 from flask import jsonify, request, render_template
 from file_handling import allowed_file, extract_text
 import os
-from ai import summarize_text
+from ai import talkWithBot, summarize_text
 from werkzeug.utils import secure_filename
 
 #signup login features about home
+
+#path Routes Works fine
 
 @app.route("/")
 def home():
@@ -35,6 +37,10 @@ def project():
 def team():
     return render_template('team.html')
 
+#==== Path Routes End =====#
+
+# File Handler Route
+
 @app.route("/summarize", methods=["POST"])
 def summarize():
     if "file" not in request.files:
@@ -61,6 +67,23 @@ def summarize():
         return jsonify({"summary": summary})
 
     return jsonify({"error": "Invalid file type"}), 400
+
+#=== file route end ===
+
+@app.route("/chat", methods = ['POST'])
+def chat():
+    print(request.form.get('message'))
+
+    message = request.form["message"]
+
+    #return "OK Recives" wow it works
+
+    response = talkWithBot(message)
+    print(response)
+
+    return jsonify(response)
+
+# ChatBot Route
 
 if __name__ == '__main__':
     app.run(debug=True)
