@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Intellidoc - AI Chatbot & Document Upload</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="AI Chatbot, Document Summarization, File Upload" name="keywords">
+    <meta content="Upload documents and chat with our AI for summarization and format conversion." name="description">
+
+    <!-- jQuery (required for Bootstrap & other scripts) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Jost:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <style>
+        /* Base Styles */
+        body, html {
+            height: auto;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            position: relative;
+            z-index: 1000;
+        }
+
+        .container-xxl {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Spinner */
+        #spinner {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            margin-top: 80px;
+        }
+
+        .chat-box {
+            width: 100%;
+            max-width: 600px;
+            flex-grow: 1;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            min-height: 70vh;
+        }
+
+        /* Messages Area */
+        .messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 10px;
+            max-height: 60vh;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .message .icon {
+            width: 40px;
+            height: 40px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .message .text {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 75%;
+        }
+
+        .user {
+            justify-content: flex-end;
+        }
+
+        .user .text {
+            background: #007bff;
+            color: white;
+        }
+
+        /* Typing Area */
+        .typing-area {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        .input-field {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+        }
+
+        .input-field input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+
+        /* File Upload Section */
+        .file-upload-section {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .file-name {
+            font-size: 0.85em;
+            color: #666;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0 5px;
+        }
+
+        .upload-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #007bff;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        .upload-btn:hover {
+            color: #0056b3;
+        }
+
+        /* Cancel Button */
+        .cancel-upload-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 0 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .cancel-upload-btn:hover {
+            color: #bd2130;
+        }
+
+        .file-upload-section.has-file .cancel-upload-btn {
+            display: inline-block;
+        }
+
+        /* Send Button */
+        .send-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            background: #0056b3;
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
+        </div>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary px-4 px-lg-5 py-3 py-lg-0">
+            <a href="{{ url_for('home') }}" class="navbar-brand text-white"><h1 class="m-0">Intellidoc</h1></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars text-white"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    <a href="{{ url_for('home') }}" class="nav-item nav-link">Home</a>
+                    <a href="{{ url_for('team') }}" class="nav-item nav-link">About Us</a>
+                    <a href="{{ url_for('features') }}" class="nav-item nav-link active">Features</a>
+                    <a href="{{ url_for('admin') }}" class="nav-item nav-link">Login/SignUp</a>
+                    <a href="{{ url_for('contact') }}" class="nav-item nav-link">Contact</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Chatbot Section -->
+        <div class="chat-container">
+            <div class="chat-box">
+                <h3 class="text-center text-primary">AI Chatbot & Document Upload</h3>
+                <div class="messages" id="chat-messages">
+                    <div class="message">
+                        <div class="icon"><i class="fa fa-user"></i></div>
+                        <div class="text">Hello! Upload a document to get started.</div>
+                    </div>
+                </div>
+
+                <!-- Typing Area -->
+                <div class="typing-area">
+                    <div class="input-field">
+                        <input type="text" id="chat-input" placeholder="Type a message..." required>
+                        <div class="file-upload-section" id="file-upload-section">
+                            <button class="upload-btn" onclick="document.getElementById('file-upload').click();">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <span id="file-name" class="file-name"></span>
+                            <button class="cancel-upload-btn" id="cancel-upload-btn" onclick="cancelFileUpload()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <input type="file" id="file-upload" class="hidden-file-input" accept=".pdf,.docx,.txt" onchange="updateFileName(this)">
+                        <button id="send-btn" class="send-btn">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="container-fluid bg-primary text-light py-3 text-center">
+            <p>&copy; 2025 Intellidoc. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Function to update file name display
+        function updateFileName(input) {
+            const fileNameSpan = document.getElementById('file-name');
+            const fileUploadSection = document.getElementById('file-upload-section');
+            const cancelBtn = document.getElementById('cancel-upload-btn');
+            
+            if (input.files && input.files[0]) {
+                fileNameSpan.textContent = input.files[0].name;
+                fileUploadSection.classList.add('has-file');
+                cancelBtn.style.display = 'inline-block';
+            } else {
+                clearFileUpload();
+            }
+        }
+
+        // Function to cancel file upload
+        function cancelFileUpload() {
+            clearFileUpload();
+            // Reset the file input
+            document.getElementById('file-upload').value = '';
+        }
+
+        // Function to clear file upload UI
+        function clearFileUpload() {
+            const fileNameSpan = document.getElementById('file-name');
+            const fileUploadSection = document.getElementById('file-upload-section');
+            const cancelBtn = document.getElementById('cancel-upload-btn');
+            
+            fileNameSpan.textContent = '';
+            fileUploadSection.classList.remove('has-file');
+            cancelBtn.style.display = 'none';
+        }
+
+        // Hide spinner after page loads
+        window.addEventListener('load', function() {
+            document.getElementById('spinner').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
