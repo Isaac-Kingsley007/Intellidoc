@@ -19,14 +19,6 @@ def about():
 def features():
     return render_template('features.html')
 
-@app.route("/login")
-def login():
-    return render_template('login.html')
-
-@app.route("/signup")
-def signup():
-    return render_template('signup.html')
-
 @app.route("/admin")
 def admin():
     return render_template('admin.html')
@@ -42,11 +34,6 @@ def project():
 @app.route("/team")
 def team():
     return render_template('team.html')
-
-@app.route("/testimonial")
-def testimonial():
-    return render_template('testimonial.html')
-
 
 @app.route("/summarize", methods=["POST"])
 def summarize():
