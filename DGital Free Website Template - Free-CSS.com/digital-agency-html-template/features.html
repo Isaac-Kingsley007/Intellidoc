@@ -32,8 +32,6 @@
     <!-- Custom Styles -->
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="style1features.css">
-
-    
 </head>
 
 <body>
@@ -56,7 +54,6 @@
                     <a href="features.html" class="nav-item nav-link active">Features</a>
                     <a href="admin.html" class="nav-item nav-link">Login/SignUp</a>
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
-                    
                 </div>
             </div>
         </nav>        
@@ -99,38 +96,88 @@
     </div>
 
     <script>
-        // Function to update file name display
-        function updateFileName(input) {
-            const fileNameSpan = document.getElementById('file-name');
-            const fileUploadSection = document.getElementById('file-upload-section');
-            const cancelBtn = document.getElementById('cancel-upload-btn');
-            
-            if (input.files && input.files[0]) {
-                fileNameSpan.textContent = input.files[0].name;
-                fileUploadSection.classList.add('has-file');
-                cancelBtn.style.display = 'inline-block';
-            } else {
-                clearFileUpload();
+        $(document).ready(function() {
+            // Function to update file name display
+            function updateFileName(input) {
+                const fileNameSpan = document.getElementById('file-name');
+                const fileUploadSection = document.getElementById('file-upload-section');
+                const cancelBtn = document.getElementById('cancel-upload-btn');
+
+                if (input.files && input.files[0]) {
+                    fileNameSpan.textContent = input.files[0].name;
+                    fileUploadSection.classList.add('has-file');
+                    cancelBtn.style.display = 'inline-block';
+                } else {
+                    clearFileUpload();
+                }
             }
-        }
 
-        // Function to cancel file upload
-        function cancelFileUpload() {
-            clearFileUpload();
-            // Reset the file input
-            document.getElementById('file-upload').value = '';
-        }
+            // Function to cancel file upload
+            function cancelFileUpload() {
+                clearFileUpload();
+                document.getElementById('file-upload').value = ''; // Reset input
+            }
 
-        // Function to clear file upload UI
-        function clearFileUpload() {
-            const fileNameSpan = document.getElementById('file-name');
-            const fileUploadSection = document.getElementById('file-upload-section');
-            const cancelBtn = document.getElementById('cancel-upload-btn');
-            
-            fileNameSpan.textContent = '';
-            fileUploadSection.classList.remove('has-file');
-            cancelBtn.style.display = 'none';
-        }
+            // Function to clear file upload UI
+            function clearFileUpload() {
+                const fileNameSpan = document.getElementById('file-name');
+                const fileUploadSection = document.getElementById('file-upload-section');
+                const cancelBtn = document.getElementById('cancel-upload-btn');
+
+                fileNameSpan.textContent = '';
+                fileUploadSection.classList.remove('has-file');
+                cancelBtn.style.display = 'none';
+            }
+
+            // Chatbot interaction
+            $("#send-btn").click(function() {
+                let message = $("#chat-input").val().trim();
+                let fileInput = $("#file-upload")[0].files[0];
+
+                if (message || fileInput) {
+                    let formData = new FormData();
+                    formData.append("message", message);
+                    if (fileInput) {
+                        formData.append("file", fileInput);
+                    }
+
+                    // Display user message
+                    displayMessage(message || fileInput.name, "user");
+
+                    // Send data to Flask backend
+                    $.ajax({
+                        url: "/chat",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            // Display chatbot response
+                            displayMessage(response.reply, "bot");
+                        },
+                        error: function() {
+                            displayMessage("Error communicating with chatbot.", "bot");
+                        }
+                    });
+
+                    // Clear input field
+                    $("#chat-input").val("");
+                    $("#file-upload").val("");
+                    $("#file-name").text("");
+                }
+            });
+
+            // Function to display chat messages
+            function displayMessage(text, sender) {
+                let messageClass = sender === "user" ? "message user" : "message bot";
+                $("#chat-messages").append(`
+                    <div class="${messageClass}">
+                        <div class="text">${text}</div>
+                    </div>
+                `);
+                $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+            }
+        });
 
         // Hide spinner after page loads
         window.addEventListener('load', function() {
