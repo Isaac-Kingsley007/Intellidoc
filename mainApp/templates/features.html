@@ -289,38 +289,6 @@
 
     <script>
         $(document).ready(function() {
-            // Function to update file name display
-            function updateFileName(input) {
-                const fileNameSpan = document.getElementById('file-name');
-                const fileUploadSection = document.getElementById('file-upload-section');
-                const cancelBtn = document.getElementById('cancel-upload-btn');
-
-                if (input.files && input.files[0]) {
-                    fileNameSpan.textContent = input.files[0].name;
-                    fileUploadSection.classList.add('has-file');
-                    cancelBtn.style.display = 'inline-block';
-                } else {
-                    clearFileUpload();
-                }
-            }
-
-            // Function to cancel file upload
-            function cancelFileUpload() {
-                clearFileUpload();
-                document.getElementById('file-upload').value = ''; // Reset input
-            }
-
-            // Function to clear file upload UI
-            function clearFileUpload() {
-                const fileNameSpan = document.getElementById('file-name');
-                const fileUploadSection = document.getElementById('file-upload-section');
-                const cancelBtn = document.getElementById('cancel-upload-btn');
-
-                fileNameSpan.textContent = '';
-                fileUploadSection.classList.remove('has-file');
-                cancelBtn.style.display = 'none';
-            }
-
             // Chatbot interaction
             $("#send-btn").click(function() {
                 let message = $("#chat-input").val().trim();
