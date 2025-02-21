@@ -289,60 +289,67 @@
 
     <script>
         $(document).ready(function() {
-            // Chatbot interaction
-            $("#send-btn").click(function() {
-                let message = $("#chat-input").val().trim();
-                let fileInput = $("#file-upload")[0].files[0];
+    $("#send-btn").click(function() {
+        let message = $("#chat-input").val().trim();
+        let fileInput = $("#file-upload")[0].files[0];
 
-                if (message || fileInput) {
-                    let formData = new FormData();
-                    formData.append("message", message);
-                    if (fileInput) {
-                        formData.append("file", fileInput);
+        if (message || fileInput) {
+            let formData = new FormData();
+            formData.append("message", message);
+            if (fileInput) {
+                formData.append("file", fileInput);
+            }
+
+            // Display user message
+            if (message) displayMessage(message, "user");
+            if (fileInput) displayMessage(`📄 ${fileInput.name}`, "user");
+
+            // Send data to Flask backend
+            $.ajax({
+                url: "/chat",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    console.log("Server Response:", response); // Debugging
+
+                    if (response.type === "text") {
+                        displayMessage(response.content, "bot");
+                    } else if (response.type === "file") {
+                        let fileUrl = response.file_url;
+                        let fileMessage = `<a href="${fileUrl}" target="_blank" download>📥 Download Processed File</a>`;
+                        displayMessage(fileMessage, "bot");
+                    } else {
+                        displayMessage("⚠️ Unexpected response from server.", "bot");
                     }
-
-                    // Display user message
-                    displayMessage(message || fileInput.name, "user");
-
-                    // Send data to Flask backend
-                    $.ajax({
-                        url: "/chat",
-                        type: "POST",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function(response) {
-                            // Display chatbot response
-                            displayMessage(response, "bot");
-                        },
-                        error: function() {
-                            displayMessage("Error communicating with chatbot.", "bot");
-                        }
-                    });
-
-                    // Clear input field
-                    $("#chat-input").val("");
-                    $("#file-upload").val("");
-                    $("#file-name").text("");
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", error); // Debugging
+                    displayMessage("❌ Error communicating with chatbot.", "bot");
                 }
             });
 
-            // Function to display chat messages
-            function displayMessage(text, sender) {
-                let messageClass = sender === "user" ? "message user" : "message bot";
-                $("#chat-messages").append(`
-                    <div class="${messageClass}">
-                        <div class="text">${text}</div>
-                    </div>
-                `);
-                $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
-            }
-        });
+            // Clear input field
+            $("#chat-input").val("");
+            $("#file-upload").val("");
+            $("#file-name").text("");
+        }
+    });
 
-        // Hide spinner after page loads
-        window.addEventListener('load', function() {
-            document.getElementById('spinner').classList.add('hidden');
-        });
+    // Function to display chat messages
+    function displayMessage(text, sender) {
+        let messageClass = sender === "user" ? "message user" : "message bot";
+        let messageHTML = `<div class="${messageClass}"><div class="text">${text}</div></div>`;
+        $("#chat-messages").append(messageHTML);
+        $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+    }
+});
+
+// Hide spinner after page loads
+window.addEventListener('load', function() {
+    document.getElementById('spinner').classList.add('hidden');
+});
     </script>
 </body>
 </html>
