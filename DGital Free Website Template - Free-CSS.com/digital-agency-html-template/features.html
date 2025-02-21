@@ -6,14 +6,15 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="AI Chatbot, Document Summarization, File Upload" name="keywords">
     <meta content="Upload documents and chat with our AI for summarization and format conversion." name="description">
-<!-- jQuery (required for Bootstrap & other scripts) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Bootstrap JavaScript (ensures proper Bootstrap components) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery (required for Bootstrap & other scripts) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Your custom JavaScript file -->
-<script src="js/main.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
@@ -32,17 +33,22 @@
     <link href="css/style.css" rel="stylesheet">
 
     <style>
-        /* Ensure full height */
+        /* Base Styles */
         body, html {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
+            height: auto;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            position: relative;
+            z-index: 1000;
         }
 
         .container-xxl {
-            flex-grow: 1;
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Spinner */
@@ -63,32 +69,36 @@
             visibility: hidden;
         }
 
-        /* Chatbot */
+        /* Chat Container */
         .chat-container {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             padding: 20px;
+            margin-top: 80px;
         }
 
         .chat-box {
             width: 100%;
             max-width: 600px;
-            height: 65vh;
+            flex-grow: 1;
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             padding: 20px;
+            min-height: 70vh;
         }
 
+        /* Messages Area */
         .messages {
             flex-grow: 1;
             overflow-y: auto;
             padding-bottom: 10px;
+            max-height: 60vh;
         }
 
         .message {
@@ -148,6 +158,23 @@
             outline: none;
         }
 
+        /* File Upload Section */
+        .file-upload-section {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .file-name {
+            font-size: 0.85em;
+            color: #666;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0 5px;
+        }
+
         .upload-btn {
             background: none;
             border: none;
@@ -161,6 +188,26 @@
             color: #0056b3;
         }
 
+        /* Cancel Button */
+        .cancel-upload-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 0 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .cancel-upload-btn:hover {
+            color: #bd2130;
+        }
+
+        .file-upload-section.has-file .cancel-upload-btn {
+            display: inline-block;
+        }
+
+        /* Send Button */
         .send-btn {
             background: #007bff;
             color: white;
@@ -181,7 +228,6 @@
 
 <body>
     <div class="container-xxl bg-white p-0">
-        
         <!-- Spinner -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
@@ -195,11 +241,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav mx-auto py-0">
-                    <a href="{{ url_for('home') }}" class="nav-item nav-link">Home</a>
-                    <a href="{{ url_for('about') }}" class="nav-item nav-link">About</a>
-                    <a href="{{ url_for('features') }}" class="nav-item nav-link active">Features</a>
-                    <a href="{{ url_for('login') }}" class="nav-item nav-link">Login</a>
-                    <a href="{{ url_for('signup') }}" class="nav-item nav-link">Sign Up</a>
+                    <a href="index.html" class="nav-item nav-link">Home</a>
+                    <a href="about.html" class="nav-item nav-link">About</a>
+                    <a href="features.html" class="nav-item nav-link active">Features</a>
+                    <a href="admin.html" class="nav-item nav-link">Login/SignUp</a>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    
                 </div>
             </div>
         </nav>        
@@ -219,10 +266,16 @@
                 <div class="typing-area">
                     <div class="input-field">
                         <input type="text" id="chat-input" placeholder="Type a message..." required>
-                        <button class="upload-btn" onclick="document.getElementById('file-upload').click();">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
-                        <input type="file" id="file-upload" class="hidden-file-input" accept=".pdf,.docx,.txt">
+                        <div class="file-upload-section" id="file-upload-section">
+                            <button class="upload-btn" onclick="document.getElementById('file-upload').click();">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <span id="file-name" class="file-name"></span>
+                            <button class="cancel-upload-btn" id="cancel-upload-btn" onclick="cancelFileUpload()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <input type="file" id="file-upload" class="hidden-file-input" accept=".pdf,.docx,.txt" onchange="updateFileName(this)">
                         <button id="send-btn" class="send-btn">Send</button>
                     </div>
                 </div>
@@ -233,42 +286,46 @@
         <footer class="container-fluid bg-primary text-light py-3 text-center">
             <p>&copy; 2025 Intellidoc. All Rights Reserved.</p>
         </footer>
-
     </div>
 
-    <!-- JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
-        // Show spinner on page load
-        document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(() => {
-                document.getElementById("spinner").classList.add("hidden");
-            }, 1500);
+        // Function to update file name display
+        function updateFileName(input) {
+            const fileNameSpan = document.getElementById('file-name');
+            const fileUploadSection = document.getElementById('file-upload-section');
+            const cancelBtn = document.getElementById('cancel-upload-btn');
+            
+            if (input.files && input.files[0]) {
+                fileNameSpan.textContent = input.files[0].name;
+                fileUploadSection.classList.add('has-file');
+                cancelBtn.style.display = 'inline-block';
+            } else {
+                clearFileUpload();
+            }
+        }
+
+        // Function to cancel file upload
+        function cancelFileUpload() {
+            clearFileUpload();
+            // Reset the file input
+            document.getElementById('file-upload').value = '';
+        }
+
+        // Function to clear file upload UI
+        function clearFileUpload() {
+            const fileNameSpan = document.getElementById('file-name');
+            const fileUploadSection = document.getElementById('file-upload-section');
+            const cancelBtn = document.getElementById('cancel-upload-btn');
+            
+            fileNameSpan.textContent = '';
+            fileUploadSection.classList.remove('has-file');
+            cancelBtn.style.display = 'none';
+        }
+
+        // Hide spinner after page loads
+        window.addEventListener('load', function() {
+            document.getElementById('spinner').classList.add('hidden');
         });
     </script>
-    <!-- jQuery (required for Bootstrap & other scripts) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Bootstrap JavaScript (ensures proper Bootstrap components) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Your custom JavaScript file -->
-<script src="js/main.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  <!-- Ensure jQuery is loaded -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="lib/wow/wow.min.js"></script>
-<script src="lib/easing/easing.min.js"></script>
-<script src="lib/waypoints/waypoints.min.js"></script>
-<script src="lib/counterup/counterup.min.js"></script>
-<script src="lib/owlcarousel/owl.carousel.min.js"></script>
-<script src="lib/isotope/isotope.pkgd.min.js"></script>
-<script src="lib/lightbox/js/lightbox.min.js"></script>
-
-<!-- Custom JavaScript -->
-<script src="js/main.js"></script>  <!-- Ensure main.js loads last -->
-
-
 </body>
 </html>
