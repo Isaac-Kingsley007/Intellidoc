@@ -77,13 +77,30 @@ def chat():
     print(request.form.get('message'))
 
     message = request.form["message"]
+    file = request.files.get("file", None)
 
-    #return "OK Recives" wow it works
+    if not file:
 
-    response = talkWithBot(message)
-    print(response)
+        response = talkWithBot(message)
+        print(response)
 
-    return jsonify(response)
+        return jsonify({"type":"text","content":response})
+    
+    if not allowed_file(file.filename):
+        return jsonify({"error":"Invalid File Type"}), 400
+    
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    file.save(filepath)
+
+    extracted_text = extract_text(filepath)
+    if not extracted_text:
+        return jsonify({"error": "Could not extract text"}), 400
+    
+    summary = summarize_text(extracted_text)
+
+    return jsonify({"type":"text","content":summary})
+
 
 #== chatbot route ends ===
 
