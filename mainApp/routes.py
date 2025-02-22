@@ -76,7 +76,7 @@ def summarize():
 def chat():
     print(request.form.get('message'))
 
-    message = request.form["message"]
+    message = request.form.get('message','')
     file = request.files.get("file", None)
 
     if not file:
