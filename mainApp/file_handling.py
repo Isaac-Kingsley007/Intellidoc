@@ -30,6 +30,3 @@ def extract_text(filepath):
 
     return text
 
-
-if __name__ == '__main__':
-    print(extract_text("uploads/Assignment - II Isaac Kingsley D.pdf"))

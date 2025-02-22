@@ -1,9 +1,6 @@
-import os
-from werkzeug.utils import secure_filename
 import pypandoc
 from PyPDF2 import PdfReader, PdfWriter
 from docx import Document
-import tempfile
 
 ALLOWED_EXTENSIONS = {
     'pdf': 'PDF Document',

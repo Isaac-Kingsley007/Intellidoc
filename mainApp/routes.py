@@ -6,8 +6,6 @@ from ai import talkWithBot, summarize_text
 from werkzeug.utils import secure_filename
 from fileconv import get_file_extension, convert_document
 
-#signup login features about home
-
 #path Routes Works fine
 
 @app.route("/")
@@ -39,37 +37,6 @@ def team():
     return render_template('team.html')
 
 #==== Path Routes End =====#
-
-# File Handler Route
-
-@app.route("/summarize", methods=["POST"])
-def summarize():
-    if "file" not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
-
-    file = request.files["file"]
-
-    if file.filename == "":
-        return jsonify({"error": "No selected file"}), 400
-
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-        file.save(filepath)
-
-        # Extract text
-        extracted_text = extract_text(filepath)
-        if not extracted_text:
-            return jsonify({"error": "Could not extract text"}), 400
-
-        # Summarize using OpenAI
-        summary = summarize_text(extracted_text)
-
-        return jsonify({"summary": summary})
-
-    return jsonify({"error": "Invalid file type"}), 400
-
-#=== file route end ===
 
 # ChatBot Route
 
@@ -130,7 +97,6 @@ def chat():
 
     return jsonify({"type":"file", "content":file_url})
     
-
 
 #== chatbot route ends ===
 
