@@ -1,0 +1,190 @@
+/* Base Styles */
+body, html {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+}
+
+.navbar {
+    position: relative;
+    z-index: 1000;
+}
+
+.container-xxl {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Spinner */
+#spinner {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out, visibility 0.5s;
+}
+
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Chat Container */
+.chat-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    margin-top: 80px;
+}
+
+.chat-box {
+    width: 100%;
+    max-width: 600px;
+    flex-grow: 1;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    min-height: 70vh;
+}
+
+/* Messages Area */
+.messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 10px;
+    max-height: 60vh;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.message .icon {
+    width: 40px;
+    height: 40px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.message .text {
+    background: #e9ecef;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 75%;
+}
+
+.user {
+    justify-content: flex-end;
+}
+
+.user .text {
+    background: #007bff;
+    color: white;
+}
+
+/* Typing Area */
+.typing-area {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+.input-field {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+.input-field input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+/* File Upload Section */
+.file-upload-section {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.file-name {
+    font-size: 0.85em;
+    color: #666;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0 5px;
+}
+
+.upload-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #007bff;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.upload-btn:hover {
+    color: #0056b3;
+}
+
+/* Cancel Button */
+.cancel-upload-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 0 5px;
+    font-size: 14px;
+    display: none;
+}
+
+.cancel-upload-btn:hover {
+    color: #bd2130;
+}
+
+.file-upload-section.has-file .cancel-upload-btn {
+    display: inline-block;
+}
+
+/* Send Button */
+.send-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.send-btn:hover {
+    background: #0056b3;
+}
+
+.hidden-file-input {
+    display: none;
+}

@@ -31,198 +31,44 @@
 
     <!-- Custom Styles -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-
+    <link href="{{ url_for('static', filename='css/style1.css') }}" rel="stylesheet">
     <style>
-        /* Base Styles */
-        body, html {
-            height: auto;
-            min-height: 100vh;
-            overflow-y: auto;
-        }
+        /* Style for the dropdown */
+.conversion-dropdown {
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    background: white;
+    color: #333;
+    font-size: 14px;
+    margin-left: 10px;
+}
 
-        .navbar {
-            position: relative;
-            z-index: 1000;
-        }
+/* Ensure the Send button stays visible */
+.input-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
 
-        .container-xxl {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+/* Adjust button appearance */
+.send-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-        /* Spinner */
-        #spinner {
-            position: fixed;
-            width: 100%;
-            height: 100vh;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out, visibility 0.5s;
-        }
-
-        .hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        /* Chat Container */
-        .chat-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 20px;
-            margin-top: 80px;
-        }
-
-        .chat-box {
-            width: 100%;
-            max-width: 600px;
-            flex-grow: 1;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            min-height: 70vh;
-        }
-
-        /* Messages Area */
-        .messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-bottom: 10px;
-            max-height: 60vh;
-        }
-
-        .message {
-            display: flex;
-            margin-bottom: 15px;
-        }
-
-        .message .icon {
-            width: 40px;
-            height: 40px;
-            background: #007bff;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-        }
-
-        .message .text {
-            background: #e9ecef;
-            padding: 10px;
-            border-radius: 10px;
-            max-width: 75%;
-        }
-
-        .user {
-            justify-content: flex-end;
-        }
-
-        .user .text {
-            background: #007bff;
-            color: white;
-        }
-
-        /* Typing Area */
-        .typing-area {
-            display: flex;
-            align-items: center;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
-        }
-
-        .input-field {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            border-radius: 5px;
-            overflow: hidden;
-            border: 1px solid #ccc;
-        }
-
-        .input-field input {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            outline: none;
-        }
-
-        /* File Upload Section */
-        .file-upload-section {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .file-name {
-            font-size: 0.85em;
-            color: #666;
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            margin: 0 5px;
-        }
-
-        .upload-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #007bff;
-            cursor: pointer;
-            padding: 0 10px;
-        }
-
-        .upload-btn:hover {
-            color: #0056b3;
-        }
-
-        /* Cancel Button */
-        .cancel-upload-btn {
-            background: none;
-            border: none;
-            color: #dc3545;
-            cursor: pointer;
-            padding: 0 5px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .cancel-upload-btn:hover {
-            color: #bd2130;
-        }
-
-        .file-upload-section.has-file .cancel-upload-btn {
-            display: inline-block;
-        }
-
-        /* Send Button */
-        .send-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-        }
-
-        .send-btn:hover {
-            background: #0056b3;
-        }
-
-        .hidden-file-input {
-            display: none;
-        }
+/* Keep file upload and dropdown aligned */
+.file-upload-section {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
     </style>
 </head>
 
@@ -236,18 +82,6 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-primary px-4 px-lg-5 py-3 py-lg-0">
             <a href="{{ url_for('home') }}" class="navbar-brand text-white"><h1 class="m-0">Intellidoc</h1></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="fa fa-bars text-white"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav mx-auto py-0">
-                    <a href="{{ url_for('home') }}" class="nav-item nav-link">Home</a>
-                    <a href="{{ url_for('team') }}" class="nav-item nav-link">About Us</a>
-                    <a href="{{ url_for('features') }}" class="nav-item nav-link active">Features</a>
-                    <a href="{{ url_for('admin') }}" class="nav-item nav-link">Login/SignUp</a>
-                    <a href="{{ url_for('contact') }}" class="nav-item nav-link">Contact</a>
-                </div>
-            </div>
         </nav>
 
         <!-- Chatbot Section -->
@@ -265,6 +99,7 @@
                 <div class="typing-area">
                     <div class="input-field">
                         <input type="text" id="chat-input" placeholder="Type a message..." required>
+                        
                         <div class="file-upload-section" id="file-upload-section">
                             <button class="upload-btn" onclick="document.getElementById('file-upload').click();">
                                 <i class="fa-solid fa-plus"></i>
@@ -275,6 +110,15 @@
                             </button>
                         </div>
                         <input type="file" id="file-upload" class="hidden-file-input" accept=".pdf,.docx,.txt" onchange="updateFileName(this)">
+                        
+                        <!-- Dropdown for document conversion -->
+                        <select id="conversion-type">
+                            <option value="none">Select Conversion Type</option>
+                            <option value="pdf">Convert to PDF</option>
+                            <option value="docx">Convert to DOCX</option>
+                            <option value="txt">Convert to TXT</option>
+                        </select>
+                        
                         <button id="send-btn" class="send-btn">Send</button>
                     </div>
                 </div>
@@ -288,10 +132,11 @@
     </div>
 
     <script>
-        $(document).ready(function() {
+       $(document).ready(function() {
     $("#send-btn").click(function() {
         let message = $("#chat-input").val().trim();
         let fileInput = $("#file-upload")[0].files[0];
+        let conversionType = $("#conversion-type").val(); // Get selected conversion type
 
         if (message || fileInput) {
             let formData = new FormData();
@@ -299,10 +144,11 @@
             if (fileInput) {
                 formData.append("file", fileInput);
             }
+            formData.append("conversion_type", conversionType); // Include conversion type
 
             // Display user message
             if (message) displayMessage(message, "user");
-            if (fileInput) displayMessage(`📄 ${fileInput.name}`, "user");
+            if (fileInput) displayMessage(`📄 ${fileInput.name} (${conversionType.toUpperCase()})`, "user");
 
             // Send data to Flask backend
             $.ajax({
@@ -312,7 +158,7 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    console.log("Server Response:", response); // Debugging
+                    console.log("Server Response:", response);
 
                     if (response.type === "text") {
                         displayMessage(response.content, "bot");
@@ -325,12 +171,12 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error("AJAX Error:", error); // Debugging
+                    console.error("AJAX Error:", error);
                     displayMessage("❌ Error communicating with chatbot.", "bot");
                 }
             });
 
-            // Clear input field
+            // Clear input fields after sending
             $("#chat-input").val("");
             $("#file-upload").val("");
             $("#file-name").text("");
@@ -344,12 +190,27 @@
         $("#chat-messages").append(messageHTML);
         $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
     }
+
+    // Function to update file name display when a file is selected
+    function updateFileName(input) {
+        let fileName = input.files.length > 0 ? input.files[0].name : "";
+        $("#file-name").text(fileName);
+        $("#cancel-upload-btn").show(); // Show cancel button when file is selected
+    }
+
+    // Function to cancel file upload
+    function cancelFileUpload() {
+        $("#file-upload").val("");
+        $("#file-name").text("");
+        $("#cancel-upload-btn").hide();
+    }
 });
 
 // Hide spinner after page loads
 window.addEventListener('load', function() {
     document.getElementById('spinner').classList.add('hidden');
 });
+
     </script>
 </body>
 </html>
