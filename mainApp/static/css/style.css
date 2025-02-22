@@ -1,9 +1,9 @@
 /********** Template CSS **********/
 :root {
-    --primary: #6222CC;
-    --secondary: #FBA504;
-    --light: #F6F4F9;
-    --dark: #04000B;
+    --primary: #1F6FEB;  /* Vibrant Blue */
+    --secondary: #00D4FF; /* Cyan */
+    --light: #E5E7EB;  /* Light Gray */
+    --dark: #121212;  /* Dark Charcoal */
 }
 
 
