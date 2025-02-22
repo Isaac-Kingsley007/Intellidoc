@@ -110,9 +110,9 @@ def chat():
 
     fromext = get_file_extension(filename)
 
-    output_folder = "static\\outputs"
+    output_file_name = "output." + convtype 
 
-    outputfile_path = os.path.join(output_folder)
+    outputfile_path = os.path.join(app.config["UPLOAD_FOLDER"], output_file_name)
 
     sucess = convert_document(filepath, outputfile_path, fromext, convtype)
 
