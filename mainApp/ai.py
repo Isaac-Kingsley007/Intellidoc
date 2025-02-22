@@ -5,6 +5,9 @@ endpoint = BASE_URL
 model_name = GEMINI_2_0_FLASH
 token = API_KEY
 
+prompt1 = "Provide a structured summary of this document with the following sections: Introduction, Key Findings, and Conclusion. Ensure the summary is easy to understand, using clear and simple language while preserving the core meaning of the document. : \n"
+prompt2 = "Provide a Summary of this document in Clear and Simple simple language while preserving the core meaning of the document. : \n"
+
 def talkWithBot(prompt):
 
     client = OpenAI(
@@ -27,4 +30,4 @@ def talkWithBot(prompt):
 
 def summarize_text(text):
     
-    return talkWithBot("Provide a structured summary of this document with the following sections: Introduction, Key Findings, and Conclusion. Ensure the summary is easy to understand, using clear and simple language while preserving the core meaning of the document. : \n" + text)
+    return talkWithBot(prompt2 + text)
