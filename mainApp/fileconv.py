@@ -5,10 +5,6 @@ from PyPDF2 import PdfReader, PdfWriter
 from docx import Document
 import tempfile
 
-# app = Flask(__name__)
-# app.config['UPLOAD_FOLDER'] = tempfile.gettempdir()
-# app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-
 ALLOWED_EXTENSIONS = {
     'pdf': 'PDF Document',
     'docx': 'Word Document',
