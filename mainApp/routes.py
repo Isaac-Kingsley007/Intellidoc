@@ -1,9 +1,10 @@
 from app import app
-from flask import jsonify, request, render_template
+from flask import jsonify, request, render_template, send_file, url_for
 from file_handling import allowed_file, extract_text
 import os
 from ai import talkWithBot, summarize_text
 from werkzeug.utils import secure_filename
+from fileconv import get_file_extension, convert_document
 
 #signup login features about home
 
@@ -78,6 +79,9 @@ def chat():
 
     message = request.form.get('message','')
     file = request.files.get("file", None)
+    convtype = request.form.get("conversion_type",'none')
+
+    print("Conv Type ", convtype)
 
     if not file:
 
@@ -93,13 +97,39 @@ def chat():
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     file.save(filepath)
 
-    extracted_text = extract_text(filepath)
-    if not extracted_text:
-        return jsonify({"error": "Could not extract text"}), 400
-    
-    summary = summarize_text(extracted_text)
+    if convtype == 'none':
 
-    return jsonify({"type":"text","content":summary})
+        extracted_text = extract_text(filepath)
+        if not extracted_text:
+            return jsonify({"error": "Could not extract text"}), 400
+        
+        summary = summarize_text(extracted_text)
+
+        return jsonify({"type":"text","content":summary})
+    
+
+    fromext = get_file_extension(filename)
+
+    output_folder = "static\\outputs"
+
+    outputfile_path = os.path.join(output_folder)
+
+    sucess = convert_document(filepath, outputfile_path, fromext, convtype)
+
+    if not sucess:
+        print('fail')
+        return 'Conversion failed', 500
+    
+    res = send_file(
+                outputfile_path,
+                as_attachment=True,
+                download_name="output." + convtype
+    )
+
+    file_url = url_for('static', filename="outputs/" + "output." + convtype)
+
+    return jsonify({"type":"file", "content":file_url})
+    
 
 
 #== chatbot route ends ===
