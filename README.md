@@ -14,7 +14,7 @@ IntellieDoc is a web application designed to simplify document handling through 
 ## Technologies Used
 - **Frontend:** HTML, CSS
 - **Backend:** Flask
-- **AI & NLP:** Gemini API (or similar NLP models)
+- **AI & NLP:** Gemini API
 - **Database:** SQLIte
 
 ## Roadmap
@@ -22,4 +22,4 @@ IntellieDoc is a web application designed to simplify document handling through 
 - 🚧 Document Format Conversion (In Progress)
 - 🛠️ Enhanced Chatbot Capabilities
 
-Let me know if you'd like any modifications!
+Let Us know if you'd like any modifications!
